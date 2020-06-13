@@ -6,25 +6,12 @@ import { AuthService } from './auth.service';
 import { AuthMiddleware } from './auth.middleware';
 import { HttpAuthGuard } from './http-auth.guard';
 import { AuthController } from './auth.controller';
-import { HttpAuthMongoRequiredGuard } from './http-auth-mongo-required.guard';
 import { WsAuthGuard } from './ws-auth.guard';
 
 @Module({
   imports: [EncryptionModule, TokenModule, UserModule],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    AuthMiddleware,
-    HttpAuthGuard,
-    HttpAuthMongoRequiredGuard,
-    WsAuthGuard,
-  ],
-  exports: [
-    AuthService,
-    AuthMiddleware,
-    HttpAuthGuard,
-    HttpAuthMongoRequiredGuard,
-    WsAuthGuard,
-  ],
+  providers: [AuthService, AuthMiddleware, HttpAuthGuard, WsAuthGuard],
+  exports: [AuthService, AuthMiddleware, HttpAuthGuard, WsAuthGuard],
 })
 export class AuthModule {}

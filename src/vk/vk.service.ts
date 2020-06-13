@@ -4,7 +4,7 @@ import { Authorization } from '@vk-io/authorization';
 
 import { AuthorizeDto } from './dtos/authorize.dto';
 import { AccountEntity } from 'src/accounts/account.entity';
-import { Target } from 'src/target/schemas/target.schema';
+import { TargetEntity } from 'src/target/target.entity';
 
 @Injectable()
 export class VkService {
@@ -25,7 +25,7 @@ export class VkService {
 
   public async sendToUser(
     account: AccountEntity,
-    target: Target,
+    target: TargetEntity,
     text: string,
   ) {
     const { token } = account;

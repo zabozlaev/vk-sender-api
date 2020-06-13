@@ -17,15 +17,17 @@ export class AuthMiddleware implements NestMiddleware {
 
   async use(req: ExpressRequest, res: Response, next: NextFunction) {
     try {
-      const token = req.cookies[TOKEN_PREFIX];
+      const token = req.headers.authorization || req.cookies[TOKEN_PREFIX];
 
-      const user = await this.authService.getUserFromToken(token);
-      console.log(user);
-      req.user = user;
+      if (token) {
+        const user = await this.authService.getUserFromToken(token);
+        req.user = user;
+      }
     } catch (error) {
       res.cookie(TOKEN_PREFIX, '', {
         expires: new Date(),
       });
+      console.log(error);
       this.logger.log(`Got invalid token for ${req.path}`);
       throw new UnprocessableEntityException(
         `Got invalid token for ${req.path}`,

@@ -13,9 +13,8 @@ import { CreateTargetDto } from './dtos/create-target.dto';
 import { TargetService } from './target.service';
 import { ExpressRequest } from 'src/common/types/express-request';
 import { TargetPaginationQueryDto } from './dtos/target-pagination-query.dto';
-import { HttpAuthMongoRequiredGuard } from 'src/auth/http-auth-mongo-required.guard';
 
-@UseGuards(HttpAuthGuard, HttpAuthMongoRequiredGuard)
+@UseGuards(HttpAuthGuard)
 @Controller('/targets')
 export class TargetController {
   constructor(private readonly targetService: TargetService) {}

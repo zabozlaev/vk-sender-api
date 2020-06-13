@@ -1,10 +1,10 @@
 import { UserEntity } from 'src/user/user.entity';
-import { Target } from 'src/target/schemas/target.schema';
 import { AccountEntity } from 'src/accounts/account.entity';
+import { TargetEntity } from 'src/target/target.entity';
 
 export class MessageConsumerPayload {
   user: UserEntity;
   account: AccountEntity;
-  target: Target;
+  target: TargetEntity;
   text: string;
 }

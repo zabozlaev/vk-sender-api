@@ -13,6 +13,7 @@ import config from './config';
 import { UserEntity } from './user/user.entity';
 import { AccountEntity } from './accounts/account.entity';
 import { AuthMiddleware } from './auth/auth.middleware';
+import { TargetEntity } from './target/target.entity';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
       host: 'localhost',
       port: 5432,
       synchronize: true,
-      entities: [UserEntity, AccountEntity],
+      entities: [UserEntity, AccountEntity, TargetEntity],
     }),
     AuthModule,
     UserModule,
