@@ -6,7 +6,6 @@ import {
   UseGuards,
   Req,
   Res,
-  Put,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
@@ -17,26 +16,22 @@ import { ExpressRequest } from 'src/common/types/express-request';
 import { OkResponseDto } from 'src/common/dtos/ok-response.dto';
 import { Response } from 'express';
 import { TOKEN_PREFIX } from './consts';
-import { UpdateUserDto } from 'src/user/dtos/update-user.dto';
+import { ApiResponse, ApiTags, ApiCookieAuth } from '@nestjs/swagger';
+import { MeResponseDto } from './dtos/me-response.dto';
 
+@ApiTags('auth')
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @ApiResponse({
+    type: MeResponseDto,
+  })
+  @ApiCookieAuth()
   @UseGuards(HttpAuthGuard)
   @Get('/me')
   public me(@Req() req: ExpressRequest) {
-    return req.user;
-  }
-
-  @UseGuards(HttpAuthGuard)
-  @Put('/me')
-  public async update(
-    @Req() req: ExpressRequest,
-    @Body() body: UpdateUserDto,
-  ): Promise<OkResponseDto> {
-    await this.authService.update(req.user, body);
-    return { ok: true };
+    return new MeResponseDto(req.user);
   }
 
   @Post('/login')
@@ -48,6 +43,9 @@ export class AuthController {
     res.cookie(TOKEN_PREFIX, token, { httpOnly: true }).send({ token });
   }
 
+  @ApiResponse({
+    type: OkResponseDto,
+  })
   @Post('/register')
   public async register(@Body() body: RegisterDto): Promise<OkResponseDto> {
     await this.authService.register(body);

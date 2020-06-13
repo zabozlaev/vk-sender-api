@@ -13,20 +13,30 @@ import { CreateTargetDto } from './dtos/create-target.dto';
 import { TargetService } from './target.service';
 import { ExpressRequest } from 'src/common/types/express-request';
 import { TargetPaginationQueryDto } from './dtos/target-pagination-query.dto';
+import { TargetPaginationResponseDto } from './dtos/target-pagination-response.dto';
+import { ApiResponse, ApiTags, ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiTags('targets')
+@ApiCookieAuth()
 @UseGuards(HttpAuthGuard)
 @Controller('/targets')
 export class TargetController {
   constructor(private readonly targetService: TargetService) {}
 
+  @ApiResponse({
+    type: TargetPaginationResponseDto,
+  })
   @Get('/')
   async list(
     @Query() query: TargetPaginationQueryDto,
     @Req() req: ExpressRequest,
-  ) {
+  ): Promise<TargetPaginationResponseDto> {
     return this.targetService.list(req.user, query);
   }
 
+  @ApiResponse({
+    type: OkResponseDto,
+  })
   @Post('/')
   async create(
     @Body() body: CreateTargetDto[],

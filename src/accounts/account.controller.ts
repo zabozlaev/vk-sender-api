@@ -4,14 +4,18 @@ import { HttpAuthGuard } from 'src/auth/http-auth.guard';
 import { CreateAccountDto } from './dtos/create-account.dto';
 import { ExpressRequest } from 'src/common/types/express-request';
 import { OkResponseDto } from 'src/common/dtos/ok-response.dto';
+import { AccountEntity } from './account.entity';
+import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
 
+@ApiTags('accounts')
+@ApiCookieAuth()
 @UseGuards(HttpAuthGuard)
 @Controller('/accounts')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Get('/')
-  async list(@Req() req: ExpressRequest) {
+  async list(@Req() req: ExpressRequest): Promise<AccountEntity[]> {
     return this.accountService.findForUser(req.user);
   }
 

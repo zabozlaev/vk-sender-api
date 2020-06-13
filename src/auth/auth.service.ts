@@ -4,7 +4,6 @@ import { UserService } from 'src/user/user.service';
 import { TokenService } from 'src/token/token.service';
 import { RegisterDto } from './dtos/register.dto';
 import { LoginDto } from './dtos/login.dto';
-import { UpdateUserDto } from 'src/user/dtos/update-user.dto';
 import { UserEntity } from 'src/user/user.entity';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async register({ password, ...data }: RegisterDto) {
+  async register({ password, ...data }: RegisterDto): Promise<UserEntity> {
     const hash = await this.encryptionService.hash(password);
 
     const userCreated = await this.userService.create({
@@ -25,7 +24,7 @@ export class AuthService {
     return userCreated;
   }
 
-  async login({ email, password }: LoginDto) {
+  async login({ email, password }: LoginDto): Promise<string> {
     const user = await this.userService.findByEmail(email);
 
     const isValid = await this.encryptionService.compare(
@@ -40,13 +39,8 @@ export class AuthService {
     return this.tokenService.create(user);
   }
 
-  async getUserFromToken(token: string) {
+  async getUserFromToken(token: string): Promise<UserEntity> {
     const { id } = await this.tokenService.identify(token);
-    console.log(id);
     return this.userService.findById(id);
-  }
-
-  async update(user: UserEntity, data: UpdateUserDto) {
-    return this.userService.update(user, data);
   }
 }

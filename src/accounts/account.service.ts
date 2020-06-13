@@ -30,8 +30,8 @@ export class AccountService {
     return this.accountRepo.save(account);
   }
 
-  async findForUser(user: UserEntity) {
-    return this.accountRepo.findOne({
+  async findForUser(user: UserEntity): Promise<AccountEntity[]> {
+    return this.accountRepo.find({
       where: {
         user,
       },

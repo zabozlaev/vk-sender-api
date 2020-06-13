@@ -7,9 +7,12 @@ import { TargetModule } from 'src/target/target.module';
 import { AccountsModule } from 'src/accounts/accounts.module';
 import { VkModule } from 'src/vk/vk.module';
 import { MessagesConsumer } from './messages.consumer';
+import { MessagesGateway } from './messages.gateway';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     BullModule.registerQueueAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,6 +32,7 @@ import { MessagesConsumer } from './messages.consumer';
     VkModule,
   ],
   controllers: [MessagesController],
-  providers: [MessagesService, MessagesConsumer],
+  providers: [MessagesService, MessagesConsumer, MessagesGateway],
+  exports: [MessagesGateway],
 })
 export class MessagesModule {}

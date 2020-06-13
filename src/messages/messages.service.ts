@@ -8,6 +8,8 @@ import { InjectQueue } from '@nestjs/bull';
 import { MessageConsumerPayload } from './dtos/message-consumer-payload.dto';
 import { VkService } from 'src/vk/vk.service';
 import { TargetStatusEnum } from 'src/target/enums/target-status.enum';
+import { MessagesGateway } from './messages.gateway';
+import { WsMessageSent } from './dtos/ws-message-sent.dto';
 
 @Injectable()
 export class MessagesService {
@@ -17,6 +19,7 @@ export class MessagesService {
     private readonly targetService: TargetService,
     private readonly accountService: AccountService,
     private readonly vkService: VkService,
+    private readonly messagesGateway: MessagesGateway,
   ) {}
 
   async create(
@@ -40,19 +43,20 @@ export class MessagesService {
   }
 
   async send({ user, account, target, text }: MessageConsumerPayload) {
+    let status: TargetStatusEnum;
+
     try {
       await this.vkService.sendToUser(account, target, text);
-      await this.targetService.changeStatus(
-        user,
-        target,
-        TargetStatusEnum.SENT,
-      );
+      status = TargetStatusEnum.SENT;
+      await this.targetService.changeStatus(user, target, status);
     } catch (error) {
-      await this.targetService.changeStatus(
-        user,
-        target,
-        TargetStatusEnum.BLOCKED,
-      );
+      status = TargetStatusEnum.BLOCKED;
+      await this.targetService.changeStatus(user, target, status);
     }
+    this.messagesGateway.emit<WsMessageSent>(user, 'message:sent', {
+      target,
+      status,
+      timestamp: new Date(),
+    });
   }
 }

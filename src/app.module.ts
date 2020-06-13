@@ -14,6 +14,7 @@ import { UserEntity } from './user/user.entity';
 import { AccountEntity } from './accounts/account.entity';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { TargetEntity } from './target/target.entity';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TargetEntity } from './target/target.entity';
       synchronize: true,
       entities: [UserEntity, AccountEntity, TargetEntity],
     }),
+    CommonModule,
     AuthModule,
     UserModule,
     AccountsModule,
